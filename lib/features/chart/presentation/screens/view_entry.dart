@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/utils/select_date.dart';
-import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
 import 'package:haash_moving_chart/features/chart/data/model/entry_model.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';
@@ -13,8 +11,6 @@ class ViewAnEntry extends StatelessWidget {
   final EntryModel entry;
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<EntryProvider>();
-    provider.items = entry.itemDetails!;
     return Scaffold(
       appBar: AppBar(
         title: Text(entry.challanNo!),
@@ -38,6 +34,7 @@ class ViewAnEntry extends StatelessWidget {
                             Text('Lat No: ${entry.latNo}'),
                             Text('Stitching Name: ${entry.stichingName}'),
                             Text('Washing Name: ${entry.washingName}'),
+                            Text('User: ${entry.userEmail}'),
                           ],
                         ),
                       ),
@@ -49,7 +46,8 @@ class ViewAnEntry extends StatelessWidget {
                             Text('Supplier Bill No: ${entry.supplierBillNo}'),
                             Text('Quantity: ${entry.quantity}'),
                             Text('Stitching Bill No: ${entry.stichingBillNo}'),
-                            Text('Washing Bill No: ${entry.washingBillNo}')
+                            Text('Washing Bill No: ${entry.washingBillNo}'),
+                            Text('Location: ${entry.location}'),
                           ],
                         ),
                       ),
@@ -64,6 +62,7 @@ class ViewAnEntry extends StatelessWidget {
             const Text('Cutting Details',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Consumer<EntryProvider>(builder: (context, provider, child) {
+              provider.items = entry.itemDetails!;
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
@@ -79,7 +78,7 @@ class ViewAnEntry extends StatelessWidget {
                     DataColumn(label: Text('Sale Bill No')),
                     DataColumn(label: Text('Remark')),
                     DataColumn(label: Text('')),
-                    DataColumn(label: Text('')),
+                    // DataColumn(label: Text('')),
                   ],
                   rows: entry.itemDetails?.map((item) {
                         return DataRow(cells: [
@@ -99,18 +98,18 @@ class ViewAnEntry extends StatelessWidget {
                                     id: entry.sId, detailsItem: item);
                               },
                               child: const Icon(Icons.edit_note_rounded))),
-                          DataCell(InkWell(
-                              onTap: () {
-                                provider.deleteItemFromEntry(
-                                    entry.sId!, item.sId!);
-                                if (provider.isSuccess) {
-                                  showSnackBar(context, 'Item deleted');
-                                }
-                              },
-                              child: const Icon(
-                                Icons.delete_forever_rounded,
-                                color: AppPallete.errorColor,
-                              ))),
+                          // DataCell(InkWell(
+                          //     onTap: () async {
+                          //       await provider.deleteItemFromEntry(
+                          //           entry.sId!, item.sId!);
+                          //       if (provider.isSuccess && context.mounted) {
+                          //         showSnackBar(context, 'Item deleted');
+                          //       }
+                          //     },
+                          //     child: const Icon(
+                          //       Icons.delete_forever_rounded,
+                          //       color: AppPallete.errorColor,
+                          //     ))),
                         ]);
                       }).toList() ??
                       [],

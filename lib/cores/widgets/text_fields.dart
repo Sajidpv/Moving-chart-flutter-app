@@ -18,7 +18,7 @@ class DefaultTextFormField extends StatelessWidget {
     this.isIgnore = false,
     this.prefix,
     this.maxLine,
-    this.isBorder = true,
+    this.isObscure = false,
     this.isValidate = false,
   });
 
@@ -29,7 +29,7 @@ class DefaultTextFormField extends StatelessWidget {
   final TextInputType? textInputType;
   final bool readOnly;
   final bool isValidate;
-  final bool? isIgnore, isBorder;
+  final bool? isIgnore, isObscure;
   final int? maxLine;
   final IconData? suffix;
   final IconData? prefix;
@@ -46,11 +46,24 @@ class DefaultTextFormField extends StatelessWidget {
     return null;
   }
 
+  String? emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email cannot be empty';
+    }
+    RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    if (!emailRegex.hasMatch(value)) {
+      return 'Invalid email format';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: isIgnore!,
       child: TextFormField(
+        obscureText: isObscure!,
         onTap: () {
           textController.selection = TextSelection(
             baseOffset: 0,
@@ -58,7 +71,11 @@ class DefaultTextFormField extends StatelessWidget {
           );
           onTap?.call();
         },
-        validator: isValidate ? validaterMandatory : null,
+        validator: isValidate
+            ? label == 'Email'
+                ? emailValidator
+                : validaterMandatory
+            : null,
         readOnly: readOnly,
         textInputAction: textInputAction,
         keyboardType: textInputType,
@@ -82,10 +99,8 @@ class DefaultTextFormField extends StatelessWidget {
                     size: 15,
                   )
                 : null,
-            border: isBorder == false
-                ? null
-                : const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             hintText: readOnly ? label : 'Enter $label',
             suffix: suffix == null ? null : Icon(suffix),
             label: Text(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
@@ -10,14 +11,42 @@ import 'package:haash_moving_chart/features/chart/presentation/widgets/add_trans
 import 'package:provider/provider.dart';
 
 class AddNewEntry extends StatelessWidget {
-  const AddNewEntry({super.key});
+  AddNewEntry({super.key});
+
+  get locations => null;
 
   @override
   Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User?>();
     final provider = context.read<EntryProvider>();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Entry'),
+        centerTitle: false,
+        title: const Text(
+          'New Entry',
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Consumer<EntryProvider>(builder: (context, _, child) {
+              return DropdownButton(
+                  underline: const SizedBox(),
+                  style: const TextStyle(fontSize: 12),
+                  value: provider.selectedLocation,
+                  items: provider.locations.map((e) {
+                    return DropdownMenuItem<dynamic>(
+                      value: e,
+                      child: Text(
+                        e.toString(),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (e) => provider.locationChanged(e!));
+            }),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -243,14 +272,15 @@ class AddNewEntry extends StatelessWidget {
                 ),
                 PrimaryButton(
                     label: 'Save',
-                    onPressed: () {
+                    onPressed: () async {
                       if (provider.formKey.currentState!.validate()) {
                         if (provider.items.isEmpty) {
                           showSnackBar(context, 'Add atleast on item');
                           return;
                         }
-                        provider.addEntry();
-                        if (provider.isSuccess) {
+
+                        await provider.addEntry(firebaseUser?.email);
+                        if (provider.isSuccess && context.mounted) {
                           showSnackBar(context, 'Entry added');
                           provider.clearFields();
                           Navigator.pop(context);

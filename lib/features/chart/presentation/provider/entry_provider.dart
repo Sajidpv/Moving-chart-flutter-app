@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:haash_moving_chart/cores/services/firebase_methods.dart';
 import 'package:haash_moving_chart/cores/utils/select_date.dart';
 import 'package:haash_moving_chart/cores/widgets/text_fields.dart';
 import 'package:haash_moving_chart/features/chart/data/model/entry_model.dart';
-import 'package:haash_moving_chart/features/chart/data/services/firebase_methods.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -15,6 +16,8 @@ class EntryProvider with ChangeNotifier {
   bool isLoading = false, isSuccess = false, isAssigned = false;
   String message = '';
   DateTime selectedDate = DateTime.now();
+  final List<String> locations = ['Kerala', 'Mumbai'];
+  String selectedLocation = 'Kerala';
   final dateController = TextEditingController();
 
   final idNoController = TextEditingController();
@@ -41,7 +44,8 @@ class EntryProvider with ChangeNotifier {
   Future<List<EntryModel>>? allEntries;
   final formKey = GlobalKey<FormState>();
   final itemsFormKey = GlobalKey<FormState>();
-  final FirebaseAuthMethods _firebaseAuthMethods = FirebaseAuthMethods();
+  final FirebaseAuthMethods _firebaseAuthMethods =
+      FirebaseAuthMethods(FirebaseAuth.instance);
   void _initialization() {
     dateController.text = formatDate(selectedDate);
     getEntries();
@@ -57,7 +61,7 @@ class EntryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void getEntries() async {
+  Future<void> getEntries() async {
     isLoading = true;
     notifyListeners();
     allEntries = _firebaseAuthMethods.getEntries();
@@ -65,7 +69,7 @@ class EntryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void editEntryItems(String docId, String entryId) async {
+  Future<void> editEntryItems(String docId, String entryId) async {
     isLoading = true;
     notifyListeners();
     final updatedModel = DetailsModel(
@@ -82,7 +86,6 @@ class EntryProvider with ChangeNotifier {
       remark: remarkController.text.trim(),
     );
     final index = items.indexWhere((element) => element.sId == entryId);
-
     if (index != -1) {
       items[index] = updatedModel;
     } else {
@@ -97,6 +100,7 @@ class EntryProvider with ChangeNotifier {
           await _firebaseAuthMethods.editEntryInDb(docId, entryId, items);
       isSuccess = result;
       message = isSuccess ? 'Item Updated' : 'Failed to update';
+      notifyListeners();
     } catch (e) {
       message = 'Error updating entry: $e';
       isSuccess = false;
@@ -106,7 +110,12 @@ class EntryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteEntry(String id) async {
+  void locationChanged(String value) {
+    selectedLocation = value;
+    notifyListeners();
+  }
+
+  Future<void> deleteEntry(String id) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -123,7 +132,7 @@ class EntryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteItemFromEntry(String documentId, String itemId) async {
+  Future<void> deleteItemFromEntry(String documentId, String itemId) async {
     isLoading = true;
     notifyListeners();
 
@@ -143,7 +152,7 @@ class EntryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addEntry() async {
+  Future<void> addEntry(String? userEmail) async {
     isLoading = true;
     notifyListeners();
     final model = EntryModel(
@@ -159,15 +168,22 @@ class EntryProvider with ChangeNotifier {
       washingName: washingController.text.trim(),
       washingBillNo: washBillController.text.trim(),
       note: noteController.text.trim(),
+      userEmail: userEmail,
+      location: selectedLocation,
       itemDetails: items,
     );
     try {
       final result = await _firebaseAuthMethods.addNewEntryToDb(model);
+      if (result) {
+        await getEntries();
+        items.clear();
+      }
       isSuccess = result;
     } catch (e) {
       message = 'Error adding new entry: $e';
       isSuccess = false;
     }
+
     isLoading = false;
     notifyListeners();
   }
@@ -224,7 +240,7 @@ class EntryProvider with ChangeNotifier {
     stichBillController.clear();
     washingController.clear();
     washBillController.clear();
-    dateController.clear();
+
     noteController.clear();
     modelController.clear();
     bundleIdController.clear();
@@ -237,6 +253,7 @@ class EntryProvider with ChangeNotifier {
     salesBillNoController.clear();
     remarkController.clear();
     selectedDate = DateTime.now();
+    dateController.text = formatDate(selectedDate);
     isSuccess = false;
     isLoading = false;
     isAssigned = false;

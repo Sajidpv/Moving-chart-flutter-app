@@ -14,6 +14,8 @@ class EntryModel {
   String? washingName;
   String? washingBillNo;
   String? note;
+  String? location;
+  String? userEmail;
   List<DetailsModel>? itemDetails;
   String? sId;
 
@@ -29,17 +31,21 @@ class EntryModel {
     this.washingName,
     this.washingBillNo,
     this.itemDetails,
+    this.location,
     this.note,
+    this.userEmail,
     this.sId,
   });
 
   EntryModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'] ?? '';
     idNo = json['idNo'] ?? '';
+    userEmail = json['userEmail'] ?? '';
     date = json['date'] != null ? DateTime.tryParse(json['date']) : null;
     challanNo = json['challanNo'] ?? '';
     supplierBillNo = json['supplierBillNo'] ?? '';
     latNo = json['latNo'] ?? '';
+    location = json['location'] ?? '';
     quantity = json['quantity']?.toDouble() ?? 0;
     stichingName = json['stichingName'] ?? '';
     stichingBillNo = json['stichingBillNo'] ?? '';
@@ -58,11 +64,13 @@ class EntryModel {
     if (sId != null) {
       data['_id'] = sId;
     }
+    data['userEmail'] = userEmail;
     data['idNo'] = idNo;
     data['date'] = date?.toIso8601String();
     data['challanNo'] = challanNo;
     data['supplierBillNo'] = supplierBillNo;
     data['latNo'] = latNo;
+    data['location'] = location;
     data['quantity'] = quantity;
     data['stichingName'] = stichingName;
     data['stichingBillNo'] = stichingBillNo;

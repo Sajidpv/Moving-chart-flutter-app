@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:haash_moving_chart/cores/services/firebase_methods.dart';
 import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
+import 'package:haash_moving_chart/features/auth/presentation/pages/login_page.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';
 import 'package:haash_moving_chart/features/chart/presentation/screens/home.dart';
 import 'package:haash_moving_chart/firebase_options.dart';
@@ -11,7 +14,25 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => EntryProvider(),
+      ),
+      Provider<FirebaseAuthMethods>(
+        create: (_) => FirebaseAuthMethods(FirebaseAuth.instance),
+      ),
+      StreamProvider(
+        create: (context) => context.read<FirebaseAuthMethods>().authState,
+        initialData: null,
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,25 +40,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => EntryProvider(),
-        ),
-      ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            title: 'Moving Chart',
-            debugShowCheckedModeBanner: false,
-            theme: themeProvider.themeData,
-            home: const HomePage(),
-          );
-        },
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Moving Chart',
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.themeData,
+          home: const AuthWrapper(),
+        );
+      },
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User?>();
+
+    if (firebaseUser == null) {
+      return const LoginPage();
+    }
+    return const HomePage();
   }
 }

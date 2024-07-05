@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
-import 'package:haash_moving_chart/cores/widgets/buttons.dart';
 import 'package:haash_moving_chart/cores/widgets/container_layout.dart';
+import 'package:provider/provider.dart';
+import 'package:haash_moving_chart/cores/widgets/buttons.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
 import 'package:haash_moving_chart/cores/widgets/text_fields.dart';
 import 'package:haash_moving_chart/features/chart/data/model/entry_model.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';
-import 'package:provider/provider.dart';
 
 void showAddItemDialog(BuildContext context, EntryProvider provider,
     {DetailsModel? detailsItem, String? id}) {
@@ -185,22 +185,26 @@ class AddItemToEntry extends StatelessWidget {
                 const SpacerWidget(
                   height: 10,
                 ),
-                Consumer<EntryProvider>(builder: (context, provider, child) {
+                Consumer<EntryProvider>(builder: (context, _, __) {
                   return provider.isLoading
                       ? const CircularProgressIndicator()
                       : PrimaryButton(
                           label: 'Add',
-                          onPressed: () {
+                          onPressed: () async {
                             if (provider.itemsFormKey.currentState!
                                 .validate()) {
                               detailsItem != null
-                                  ? provider.editEntryItems(
+                                  ? await provider.editEntryItems(
                                       id!, detailsItem!.sId!)
                                   : provider.addItems();
+                              if (provider.isSuccess == true) {
+                                if (detailsItem != null && context.mounted) {
+                                  showSnackBar(context, provider.message);
+                                }
+                                provider.clearAlertFields();
+                                if (context.mounted) Navigator.pop(context);
+                              }
                             }
-
-                            provider.clearFields();
-                            Navigator.pop(context);
                           });
                 })
               ],
