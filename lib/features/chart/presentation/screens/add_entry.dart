@@ -32,27 +32,29 @@ class AddNewEntry extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Consumer<EntryProvider>(builder: (context, _, child) {
-              return DropdownButton(
-                  underline: const SizedBox(),
-                  style: const TextStyle(fontSize: 12),
-                  value: provider.selectedLocation,
-                  items: provider.locations.map((e) {
-                    return DropdownMenuItem<dynamic>(
-                      value: e,
-                      child: Consumer<ThemeProvider>(
-                          builder: (context, provider, __) {
-                        return Text(
-                          e.toString(),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: provider.isDarkMode
-                                  ? AppPallete.lightBackgroundColor
-                                  : AppPallete.backgroundColor),
+              return !provider.isAdmin
+                  ? const SizedBox()
+                  : DropdownButton(
+                      underline: const SizedBox(),
+                      style: const TextStyle(fontSize: 12),
+                      value: provider.selectedLocation,
+                      items: provider.locations.map((e) {
+                        return DropdownMenuItem<dynamic>(
+                          value: e,
+                          child: Consumer<ThemeProvider>(
+                              builder: (context, provider, __) {
+                            return Text(
+                              e.toString(),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: provider.isDarkMode
+                                      ? AppPallete.lightBackgroundColor
+                                      : AppPallete.backgroundColor),
+                            );
+                          }),
                         );
-                      }),
-                    );
-                  }).toList(),
-                  onChanged: (e) => provider.locationChanged(e!));
+                      }).toList(),
+                      onChanged: (e) => provider.locationChanged(e!));
             }),
           ),
         ],

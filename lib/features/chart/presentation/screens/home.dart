@@ -29,27 +29,29 @@ class HomePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Consumer<EntryProvider>(builder: (context, provider, __) {
-              return DropdownButton(
-                  underline: const SizedBox(),
-                  style: const TextStyle(fontSize: 12),
-                  value: provider.selectedLocation,
-                  items: provider.locations.map((e) {
-                    return DropdownMenuItem<dynamic>(
-                      value: e,
-                      child: Consumer<ThemeProvider>(
-                          builder: (context, provider, __) {
-                        return Text(
-                          e.toString(),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: provider.isDarkMode
-                                  ? AppPallete.lightBackgroundColor
-                                  : AppPallete.backgroundColor),
+              return !provider.isAdmin
+                  ? const SizedBox()
+                  : DropdownButton(
+                      underline: const SizedBox(),
+                      style: const TextStyle(fontSize: 12),
+                      value: provider.selectedLocation,
+                      items: provider.locations.map((e) {
+                        return DropdownMenuItem<dynamic>(
+                          value: e,
+                          child: Consumer<ThemeProvider>(
+                              builder: (context, provider, __) {
+                            return Text(
+                              e.toString(),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: provider.isDarkMode
+                                      ? AppPallete.lightBackgroundColor
+                                      : AppPallete.backgroundColor),
+                            );
+                          }),
                         );
-                      }),
-                    );
-                  }).toList(),
-                  onChanged: (e) => provider.locationChanged(e));
+                      }).toList(),
+                      onChanged: (e) => provider.locationChanged(e));
             }),
           ),
         ],
@@ -67,13 +69,15 @@ class HomePage extends StatelessWidget {
       ),
       body: WillPopScopWidget(
         child: Consumer<EntryProvider>(builder: (context, provider, child) {
+          final location = provider.isAdmin
+              ? provider.selectedLocation
+              : provider.userData?['location'];
           return FutureBuilder(
               future: provider.allEntries,
               builder: (context, AsyncSnapshot<List<EntryModel>> snapshot) {
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   final filteredIitems = snapshot.data!
-                      .where((element) =>
-                          element.location == provider.selectedLocation)
+                      .where((element) => element.location == location)
                       .toList();
                   return RefreshIndicator(
                     onRefresh: () {

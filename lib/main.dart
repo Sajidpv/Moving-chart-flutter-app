@@ -59,10 +59,58 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
+    final firebaseAuthMethods = context.read<FirebaseAuthMethods>();
+    final provider = context.read<EntryProvider>();
 
     if (firebaseUser == null) {
       return const LoginPage();
+    } else {
+      return FutureBuilder<Map<String, dynamic>?>(
+        future: firebaseAuthMethods.fetchUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Scaffold(
+                body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Center(child: Text('Error fetching user data')),
+                Center(
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Logout'),
+                    onPressed: () {
+                      context.read<FirebaseAuthMethods>().signOut(context);
+                    },
+                  ),
+                ),
+              ],
+            ));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Scaffold(
+                body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Center(child: Text('User data not found')),
+                Center(
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Logout'),
+                    onPressed: () {
+                      context.read<FirebaseAuthMethods>().signOut(context);
+                    },
+                  ),
+                ),
+              ],
+            ));
+          } else {
+            provider.userData = snapshot.data!;
+            provider.isAdmin = provider.userData?['isAdmin'];
+            return const HomePage();
+          }
+        },
+      );
     }
-    return const HomePage();
   }
 }

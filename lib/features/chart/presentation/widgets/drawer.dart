@@ -50,6 +50,20 @@ class HomeDrawer extends StatelessWidget {
                   const SpacerWidget(
                     height: 20,
                   ),
+                  user == null
+                      ? const SizedBox()
+                      : ListTile(
+                          tileColor: Colors.transparent,
+                          leading: const Icon(Icons.person_outlined),
+                          visualDensity:
+                              const VisualDensity(vertical: -3, horizontal: 1),
+                          title: Text(user!.email!),
+                          onTap: () {
+                            context
+                                .read<FirebaseAuthMethods>()
+                                .signOut(context);
+                          },
+                        ),
                   ListTile(
                     tileColor: Colors.transparent,
                     leading: const Icon(Icons.color_lens),

@@ -16,7 +16,7 @@ class EntryProvider with ChangeNotifier {
   bool isLoading = false, isSuccess = false, isAssigned = false;
   String message = '';
   DateTime selectedDate = DateTime.now();
-  final List<String> locations = ['Kerala', 'Mumbai'];
+  final List<String> locations = ['Kerala', 'Mumbai', 'Bengaluru'];
   String selectedLocation = 'Kerala';
   final dateController = TextEditingController();
 
@@ -44,6 +44,8 @@ class EntryProvider with ChangeNotifier {
   Future<List<EntryModel>>? allEntries;
   final formKey = GlobalKey<FormState>();
   final itemsFormKey = GlobalKey<FormState>();
+  Map<String, dynamic>? userData;
+  bool isAdmin = false;
   final FirebaseAuthMethods _firebaseAuthMethods =
       FirebaseAuthMethods(FirebaseAuth.instance);
   void _initialization() {
@@ -154,6 +156,7 @@ class EntryProvider with ChangeNotifier {
 
   Future<void> addEntry(String? userEmail) async {
     isLoading = true;
+
     notifyListeners();
     final model = EntryModel(
       sId: uuid.v4(),
@@ -169,7 +172,7 @@ class EntryProvider with ChangeNotifier {
       washingBillNo: washBillController.text.trim(),
       note: noteController.text.trim(),
       userEmail: userEmail,
-      location: selectedLocation,
+      location: isAdmin ? selectedLocation : userData?['location'],
       itemDetails: items,
     );
     try {

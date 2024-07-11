@@ -59,7 +59,7 @@ class ViewAnEntry extends StatelessWidget {
               ),
             ),
             const SpacerWidget(height: 20),
-            const Text('Cutting Details',
+            const Text('Item Details',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Consumer<EntryProvider>(builder: (context, provider, child) {
               provider.items = entry.itemDetails!;

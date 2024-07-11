@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/features/chart/data/model/entry_model.dart';
-import 'package:haash_moving_chart/features/chart/presentation/screens/home.dart';
 
 class FirebaseAuthMethods {
   final emailController = TextEditingController();
@@ -34,6 +33,17 @@ class FirebaseAuthMethods {
       if (context.mounted) {
         showSnackBar(context, 'An unexpected error occurred: ${e.toString()}');
       }
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchUserData() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection('users').doc(user.uid).get();
+      return userDoc.data();
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return null;
     }
   }
 
