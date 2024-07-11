@@ -107,6 +107,12 @@ class AuthWrapper extends StatelessWidget {
           } else {
             provider.userData = snapshot.data!;
             provider.isAdmin = provider.userData?['isAdmin'];
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              context
+                  .read<ThemeProvider>()
+                  .toggleTheme(provider.userData?['isDarkMode'] ?? true);
+            });
+
             return const HomePage();
           }
         },

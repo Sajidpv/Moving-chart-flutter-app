@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';

@@ -74,7 +74,7 @@ class HomeDrawer extends StatelessWidget {
                       return Switch(
                         value: provider.isDarkMode,
                         onChanged: (value) {
-                          provider.toggleTheme(user!);
+                          provider.toggleTheme(value);
                         },
                       );
                     }),

@@ -104,7 +104,7 @@ class EntryProvider with ChangeNotifier {
       message = isSuccess ? 'Item Updated' : 'Failed to update';
       notifyListeners();
     } catch (e) {
-      message = 'Error updating entry: $e';
+      message = e.toString();
       isSuccess = false;
     }
 

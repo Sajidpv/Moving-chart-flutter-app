@@ -160,7 +160,9 @@ class HomePage extends StatelessWidget {
                         SpacerWidget(
                           height: 250,
                         ),
-                        Center(child: Text('No Entries found!')),
+                        Center(
+                            child: Text(
+                                'No Entries found! Pull down to refresh.')),
                       ],
                     ),
                   );

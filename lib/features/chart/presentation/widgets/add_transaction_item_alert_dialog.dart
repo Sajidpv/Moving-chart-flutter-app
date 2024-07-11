@@ -191,6 +191,12 @@ class AddItemToEntry extends StatelessWidget {
                                 }
                                 provider.clearAlertFields();
                                 if (context.mounted) Navigator.pop(context);
+                              } else {
+                                if (detailsItem != null && context.mounted) {
+                                  showSnackBar(context,
+                                      '${provider.message}, Please refresh the app and try again.');
+                                  if (context.mounted) Navigator.pop(context);
+                                }
                               }
                             }
                           });

@@ -14,23 +14,23 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme(user) {
-    isDarkMode = !isDarkMode;
+  void toggleTheme(value) {
+    isDarkMode = value;
     if (isDarkMode == true) {
       themeData = AppTheme.darkThemeMode;
     } else {
       themeData = AppTheme.lightThemeMode;
     }
-    isDarkModeChanged(user);
+    isDarkModeChanged();
   }
 
   final FirebaseAuthMethods _firebaseAuthMethods =
       FirebaseAuthMethods(FirebaseAuth.instance);
-  void isDarkModeChanged(user) async {
+  void isDarkModeChanged() async {
     try {
-      await _firebaseAuthMethods.updateDarkModeTheme(user, isDarkMode);
+      await _firebaseAuthMethods.updateDarkModeTheme(isDarkMode);
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 }

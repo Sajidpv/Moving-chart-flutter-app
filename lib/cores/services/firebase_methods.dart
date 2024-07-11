@@ -76,41 +76,22 @@ class FirebaseAuthMethods {
           {'itemDetails': updatedItems.map((item) => item.toJson()).toList()});
       return true;
     } on FirebaseException catch (e) {
-      print('Error updating entry: $e');
+      if (e.code == 'NOT_FOUND') {
+        return false;
+      }
       rethrow;
     }
   }
 
-  Future<void> updateDarkModeTheme(user, bool isDarkMode) async {
+  Future<void> updateDarkModeTheme(bool isDarkMode) async {
     try {
       await _firestore
-          .collection('isDarkTheme')
-          .doc(user.email)
+          .collection('users')
+          .doc(user.uid)
           .set({'isDarkMode': isDarkMode}, SetOptions(merge: true));
     } on FirebaseException catch (e) {
       print('Error updating entry: $e');
       rethrow;
-    }
-  }
-
-  Future<bool?> getCurrentUserDarkModePreference(String userEmail) async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('isDarkTheme').doc(userEmail).get();
-
-      if (snapshot.exists) {
-        dynamic isDarkModeValue = snapshot.data()?['isDarkMode'];
-        if (isDarkModeValue is bool) {
-          return isDarkModeValue;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print('Error getting dark mode preference: $e');
-      return false;
     }
   }
 
