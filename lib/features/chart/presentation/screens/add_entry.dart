@@ -188,7 +188,7 @@ class AddNewEntry extends StatelessWidget {
                 const SpacerWidget(
                   height: 10,
                 ),
-                const Text('CUTTING DETAILS'),
+                const Text('ITEMS DETAILS'),
                 const SpacerWidget(
                   height: 5,
                 ),

@@ -58,11 +58,6 @@ class HomeDrawer extends StatelessWidget {
                           visualDensity:
                               const VisualDensity(vertical: -3, horizontal: 1),
                           title: Text(user!.email!),
-                          onTap: () {
-                            context
-                                .read<FirebaseAuthMethods>()
-                                .signOut(context);
-                          },
                         ),
                   ListTile(
                     tileColor: Colors.transparent,
