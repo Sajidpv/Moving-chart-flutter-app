@@ -64,9 +64,9 @@ class AddItemToEntry extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Add Item',
-                      style: TextStyle(fontSize: 24),
+                    Text(
+                      '${detailsItem != null ? 'Edit' : 'Add'} Item',
+                      style: const TextStyle(fontSize: 24),
                     ),
                     InkWell(
                         onTap: () => Navigator.pop(context),
@@ -177,7 +177,7 @@ class AddItemToEntry extends StatelessWidget {
                   return provider.isLoading
                       ? const CircularProgressIndicator()
                       : PrimaryButton(
-                          label: 'Add',
+                          label: detailsItem != null ? 'Edit' : 'Add',
                           onPressed: () async {
                             if (provider.itemsFormKey.currentState!
                                 .validate()) {
