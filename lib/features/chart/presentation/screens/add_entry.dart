@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
+import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/cores/widgets/buttons.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
@@ -11,7 +12,7 @@ import 'package:haash_moving_chart/features/chart/presentation/widgets/add_trans
 import 'package:provider/provider.dart';
 
 class AddNewEntry extends StatelessWidget {
-  AddNewEntry({super.key});
+  const AddNewEntry({super.key});
 
   get locations => null;
 
@@ -19,6 +20,7 @@ class AddNewEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
     final provider = context.read<EntryProvider>();
+    provider.clearFields();
 
     return Scaffold(
       appBar: AppBar(
@@ -37,10 +39,17 @@ class AddNewEntry extends StatelessWidget {
                   items: provider.locations.map((e) {
                     return DropdownMenuItem<dynamic>(
                       value: e,
-                      child: Text(
-                        e.toString(),
-                        style: const TextStyle(fontSize: 12),
-                      ),
+                      child: Consumer<ThemeProvider>(
+                          builder: (context, provider, __) {
+                        return Text(
+                          e.toString(),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: provider.isDarkMode
+                                  ? AppPallete.lightBackgroundColor
+                                  : AppPallete.backgroundColor),
+                        );
+                      }),
                     );
                   }).toList(),
                   onChanged: (e) => provider.locationChanged(e!));
@@ -57,46 +66,40 @@ class AddNewEntry extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                        flex: 2,
-                        child: Consumer<EntryProvider>(
-                            builder: (context, prov, child) {
-                          return DefaultTextFormField(
-                            isValidate: true,
-                            textInputType: TextInputType.number,
-                            textController: provider.idNoController,
-                            label: 'ID No',
-                          );
-                        })),
+                    Consumer<EntryProvider>(builder: (context, prov, child) {
+                      return Expanded(
+                        child: DefaultTextFormField(
+                          isValidate: true,
+                          textInputType: TextInputType.number,
+                          textController: provider.idNoController,
+                          label: 'ID No',
+                        ),
+                      );
+                    }),
                     const SpacerWidget(
                       width: 10,
                     ),
-                    Expanded(
-                        flex: 2,
-                        child: Consumer<EntryProvider>(
-                            builder: (context, prov, child) {
-                          return DefaultTextFormField(
-                            readOnly: true,
-                            isValidate: true,
-                            onTap: () => provider.selectDateFunction(context),
-                            textController: provider.dateController,
-                            label: 'Date',
-                          );
-                        })),
-                    const SpacerWidget(
-                      width: 10,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: DefaultTextFormField(
-                        isValidate: true,
-                        textController: provider.challanController,
-                        label: 'Challan No',
-                      ),
-                    ),
+                    Consumer<EntryProvider>(builder: (context, prov, child) {
+                      return Expanded(
+                        child: DefaultTextFormField(
+                          readOnly: true,
+                          isValidate: true,
+                          onTap: () => provider.selectDateFunction(context),
+                          textController: provider.dateController,
+                          label: 'Date',
+                        ),
+                      );
+                    }),
                   ],
+                ),
+                const SpacerWidget(
+                  height: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.challanController,
+                  label: 'Challan No',
                 ),
                 const SpacerWidget(
                   height: 20,
@@ -105,41 +108,27 @@ class AddNewEntry extends StatelessWidget {
                 const SpacerWidget(
                   height: 5,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: DefaultTextFormField(
-                        isValidate: true,
-                        textController: provider.supplierBillController,
-                        label: 'Supplier bill No',
-                      ),
-                    ),
-                    const SpacerWidget(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: DefaultTextFormField(
-                        isValidate: true,
-                        textController: provider.latNoController,
-                        label: 'LAT No',
-                      ),
-                    ),
-                    const SpacerWidget(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: DefaultTextFormField(
-                        isValidate: true,
-                        textInputType: TextInputType.number,
-                        textController: provider.quantityController,
-                        label: 'Quantity',
-                      ),
-                    ),
-                  ],
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.supplierBillController,
+                  label: 'Supplier bill No',
+                ),
+                const SpacerWidget(
+                  width: 20,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.latNoController,
+                  label: 'LAT No',
+                ),
+                const SpacerWidget(
+                  width: 20,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textInputType: TextInputType.number,
+                  textController: provider.quantityController,
+                  label: 'Quantity',
                 ),
                 const SpacerWidget(
                   height: 10,

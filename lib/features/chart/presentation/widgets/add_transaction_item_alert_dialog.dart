@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/cores/widgets/container_layout.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,9 @@ class AddItemToEntry extends StatelessWidget {
                           radius: 30,
                           Icon(
                             Icons.close,
-                            color: Theme.of(context).primaryColor,
+                            color: context.read<ThemeProvider>().isDarkMode
+                                ? Theme.of(context).secondaryHeaderColor
+                                : Theme.of(context).primaryColor,
                           ),
                         ))
                   ],
@@ -83,97 +86,82 @@ class AddItemToEntry extends StatelessWidget {
                 const SpacerWidget(
                   height: 10,
                 ),
-                Row(children: [
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textController: provider.modelController,
-                    label: 'Model',
-                  )),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textController: provider.bundleIdController,
-                    label: 'BundleId',
-                  )),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textController: provider.colorController,
-                    label: 'Color',
-                  )),
-                ]),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.modelController,
+                  label: 'Model',
+                ),
                 const SpacerWidget(
                   height: 10,
                 ),
-                Row(children: [
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textController: provider.sizeController,
-                    label: 'Size',
-                  )),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textInputType: TextInputType.number,
-                    textController: provider.itemQuantityController,
-                    onChanged: (value) => provider.calculateTotalQuantity(),
-                    label: 'Quantity',
-                  )),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textInputType: TextInputType.number,
-                    textController: provider.damageQuantityController,
-                    onChanged: (value) => provider.calculateTotalQuantity(),
-                    label: 'Damage',
-                  )),
-                ]),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.bundleIdController,
+                  label: 'BundleId',
+                ),
                 const SpacerWidget(
                   height: 10,
                 ),
-                Row(children: [
-                  Expanded(
-                      child: DefaultTextFormField(
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.colorController,
+                  label: 'Color',
+                ),
+                const SpacerWidget(
+                  height: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.sizeController,
+                  label: 'Size',
+                ),
+                const SpacerWidget(
+                  height: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textInputType: TextInputType.number,
+                  textController: provider.itemQuantityController,
+                  onChanged: (value) => provider.calculateTotalQuantity(),
+                  label: 'Quantity',
+                ),
+                const SpacerWidget(
+                  height: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textInputType: TextInputType.number,
+                  textController: provider.damageQuantityController,
+                  onChanged: (value) => provider.calculateTotalQuantity(),
+                  label: 'Damage',
+                ),
+                const SpacerWidget(
+                  height: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.stichingOrWashingController,
+                  label: 'Stiching/Washing',
+                ),
+                const SpacerWidget(
+                  width: 10,
+                ),
+                Consumer<EntryProvider>(builder: (context, provider, child) {
+                  return DefaultTextFormField(
                     isValidate: true,
-                    textController: provider.stichingOrWashingController,
-                    label: 'Stiching/Washing',
-                  )),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(child: Consumer<EntryProvider>(
-                      builder: (context, provider, child) {
-                    return DefaultTextFormField(
-                      isValidate: true,
-                      textInputType: TextInputType.number,
-                      textController: provider.finalQuantityController,
-                      label: 'Final Quantity',
-                    );
-                  })),
-                  const SpacerWidget(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: DefaultTextFormField(
-                    isValidate: true,
-                    textController: provider.salesBillNoController,
-                    label: 'Sales Bill No',
-                  )),
-                ]),
+                    textInputType: TextInputType.number,
+                    textController: provider.finalQuantityController,
+                    label: 'Final Quantity',
+                  );
+                }),
+                const SpacerWidget(
+                  width: 10,
+                ),
+                DefaultTextFormField(
+                  isValidate: true,
+                  textController: provider.salesBillNoController,
+                  label: 'Sales Bill No',
+                ),
                 const SpacerWidget(
                   height: 10,
                 ),

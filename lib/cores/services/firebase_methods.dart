@@ -37,27 +37,6 @@ class FirebaseAuthMethods {
     }
   }
 
-  Future<void> signIn(String vid, String code, BuildContext context) async {
-    PhoneAuthCredential credential =
-        PhoneAuthProvider.credential(verificationId: vid, smsCode: code);
-    try {
-      await _auth.signInWithCredential(credential).then(
-          (value) => Navigator.pushReplacement(context, HomePage.route()));
-    } on FirebaseAuthException catch (e) {
-      String error = e.code;
-      if (e.code == 'channel-error') {
-        error = 'Invalid Credentials';
-      }
-      if (context.mounted) {
-        showSnackBar(context, error);
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, 'Error Occured${e.toString()}');
-      }
-    }
-  }
-
   // SIGN OUT
   Future<void> signOut(BuildContext context) async {
     try {

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
 import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/cores/widgets/app_clossing_function.dart';
@@ -35,10 +36,17 @@ class HomePage extends StatelessWidget {
                   items: provider.locations.map((e) {
                     return DropdownMenuItem<dynamic>(
                       value: e,
-                      child: Text(
-                        e.toString(),
-                        style: const TextStyle(fontSize: 12),
-                      ),
+                      child: Consumer<ThemeProvider>(
+                          builder: (context, provider, __) {
+                        return Text(
+                          e.toString(),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: provider.isDarkMode
+                                  ? AppPallete.lightBackgroundColor
+                                  : AppPallete.backgroundColor),
+                        );
+                      }),
                     );
                   }).toList(),
                   onChanged: (e) => provider.locationChanged(e));
@@ -51,8 +59,8 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddNewEntry()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddNewEntry()));
         },
         icon: const Icon(Icons.add),
         label: const Text('New Entry'),
@@ -117,9 +125,9 @@ class HomePage extends StatelessWidget {
                                 ],
                               ),
                               trailing: IconButton(
-                                onPressed: () {
-                                  provider.deleteEntry(item.sId!);
-                                  if (provider.isSuccess) {
+                                onPressed: () async {
+                                  await provider.deleteEntry(item.sId!);
+                                  if (provider.isSuccess && context.mounted) {
                                     showSnackBar(context,
                                         '${item.challanNo} is deleted successfully');
                                   }
@@ -138,11 +146,37 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('No Entries found!'),
+                  return RefreshIndicator(
+                    onRefresh: () {
+                      provider.getEntries();
+                      return Future.delayed(const Duration(seconds: 2));
+                    },
+                    child: ListView(
+                      children: const [
+                        SpacerWidget(
+                          height: 250,
+                        ),
+                        Center(child: Text('No Entries found!')),
+                      ],
+                    ),
                   );
                 } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return RefreshIndicator(
+                    onRefresh: () {
+                      provider.getEntries();
+                      return Future.delayed(const Duration(seconds: 2));
+                    },
+                    child: ListView(
+                      children: const [
+                        SpacerWidget(
+                          height: 250,
+                        ),
+                        Center(
+                            child: Text(
+                                'Somthing whent wrong, Pull down to refresh')),
+                      ],
+                    ),
+                  );
                 } else {
                   return const ShimmerListTile();
                 }
