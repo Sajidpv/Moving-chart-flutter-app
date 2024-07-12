@@ -18,6 +18,7 @@ class EntryProvider with ChangeNotifier {
   DateTime selectedDate = DateTime.now();
   final List<String> locations = ['Kerala', 'Mumbai', 'Bengaluru'];
   String selectedLocation = 'Kerala';
+  String? selectedStatus;
   final dateController = TextEditingController();
 
   final idNoController = TextEditingController();
@@ -75,21 +76,23 @@ class EntryProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
     final updatedModel = DetailsModel(
-      sId: entryId,
-      model: modelController.text.trim(),
-      bundleNo: bundleIdController.text.trim(),
-      color: colorController.text.trim(),
-      size: sizeController.text.trim(),
-      quantity: parseDouble(itemQuantityController.text.trim()),
-      damageQuantity: parseDouble(damageQuantityController.text.trim()),
-      stitchingOrWashing: stichingOrWashingController.text.trim(),
-      finalQuantity: parseDouble(finalQuantityController.text.trim()),
-      saleBillNo: salesBillNoController.text.trim(),
-      remark: remarkController.text.trim(),
-    );
+        sId: entryId,
+        model: modelController.text.trim(),
+        bundleNo: bundleIdController.text.trim(),
+        color: colorController.text.trim(),
+        size: sizeController.text.trim(),
+        quantity: parseDouble(itemQuantityController.text.trim()),
+        damageQuantity: parseDouble(damageQuantityController.text.trim()),
+        stitchingOrWashing: stichingOrWashingController.text.trim(),
+        finalQuantity: parseDouble(finalQuantityController.text.trim()),
+        saleBillNo: salesBillNoController.text.trim(),
+        remark: remarkController.text.trim(),
+        status: selectedStatus);
     final index = items.indexWhere((element) => element.sId == entryId);
     if (index != -1) {
       items[index] = updatedModel;
+      items[index] =
+          items[index].copyWith(lastEditedBy: _firebaseAuthMethods.user.email);
     } else {
       message = 'Error: Entry ID not found in the list';
       isLoading = false;
@@ -102,6 +105,43 @@ class EntryProvider with ChangeNotifier {
           await _firebaseAuthMethods.editEntryInDb(docId, entryId, items);
       isSuccess = result;
       message = isSuccess ? 'Item Updated' : 'Failed to update';
+      notifyListeners();
+    } catch (e) {
+      message = e.toString();
+      isSuccess = false;
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> updateStatus(
+      String docId, String entryId, String newStatus) async {
+    isLoading = true;
+    notifyListeners();
+    String status;
+    if (newStatus == 'Finished') {
+      status = 'Finished';
+    } else {
+      status = 'Pending';
+    }
+
+    final index = items.indexWhere((element) => element.sId == entryId);
+    if (index != -1) {
+      items[index] = items[index].copyWith(
+          status: status, lastEditedBy: _firebaseAuthMethods.user.email);
+    } else {
+      message = 'Error: Entry ID not found in the list';
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final result =
+          await _firebaseAuthMethods.editEntryInDb(docId, entryId, items);
+      isSuccess = result;
+      message = isSuccess ? 'Status Updated' : 'Failed to update';
       notifyListeners();
     } catch (e) {
       message = e.toString();
@@ -205,6 +245,7 @@ class EntryProvider with ChangeNotifier {
           stitchingOrWashing: stichingOrWashingController.text.trim(),
           finalQuantity: parseDouble(finalQuantityController.text.trim()),
           saleBillNo: salesBillNoController.text.trim(),
+          status: 'Pending',
           remark: remarkController.text.trim()));
       isSuccess = true;
     } catch (e) {

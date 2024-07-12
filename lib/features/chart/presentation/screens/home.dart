@@ -88,57 +88,33 @@ class HomePage extends StatelessWidget {
                       itemCount: filteredIitems.length,
                       itemBuilder: (BuildContext context, int index) {
                         final item = filteredIitems[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              provider.items = item.itemDetails!;
+                        bool hasPending = item.itemDetails
+                                ?.any((item) => item.status != 'Finished') ??
+                            false;
+                        return GestureDetector(
+                          onTap: () {
+                            provider.items = item.itemDetails!;
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ViewAnEntry(entry: item)));
-                            },
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundColor:
-                                    const Color.fromARGB(202, 221, 221, 221),
-                                child: Text(
-                                  item.idNo!,
-                                  style: const TextStyle(
-                                      fontSize: 18, color: Colors.black),
-                                ),
-                              ),
-                              title: Text(item.challanNo!,
-                                  style: const TextStyle(fontSize: 16)),
-                              subtitle: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      item.quantity.toString(),
-                                      style: const TextStyle(fontSize: 12),
-                                      overflow: TextOverflow.ellipsis,
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewAnEntry(entry: item)));
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: hasPending
+                                ? entryTileWidget(item, provider, context)
+                                : ClipRRect(
+                                    child: Banner(
+                                      message: 'Finished',
+                                      color: AppPallete.enabledGreen,
+                                      location: BannerLocation.topEnd,
+                                      child: entryTileWidget(
+                                          item, provider, context),
                                     ),
                                   ),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                onPressed: () async {
-                                  await provider.deleteEntry(item.sId!);
-                                  if (provider.isSuccess && context.mounted) {
-                                    showSnackBar(context,
-                                        '${item.challanNo} is deleted successfully');
-                                  }
-                                },
-                                icon: const Icon(Icons.delete),
-                              ),
-                            ),
                           ),
                         );
                       },
@@ -189,6 +165,45 @@ class HomePage extends StatelessWidget {
               });
         }),
       ),
+    );
+  }
+
+  ListTile entryTileWidget(
+      EntryModel item, EntryProvider provider, BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 25,
+        backgroundColor: const Color.fromARGB(202, 221, 221, 221),
+        child: Text(
+          item.idNo!,
+          style: const TextStyle(fontSize: 18, color: Colors.black),
+        ),
+      ),
+      title: Text(item.challanNo!, style: const TextStyle(fontSize: 16)),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(
+              item.quantity.toString(),
+              style: const TextStyle(fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      trailing: !provider.isAdmin
+          ? null
+          : IconButton(
+              onPressed: () async {
+                await provider.deleteEntry(item.sId!);
+                if (provider.isSuccess && context.mounted) {
+                  showSnackBar(
+                      context, '${item.challanNo} is deleted successfully');
+                }
+              },
+              icon: const Icon(Icons.delete),
+            ),
     );
   }
 }

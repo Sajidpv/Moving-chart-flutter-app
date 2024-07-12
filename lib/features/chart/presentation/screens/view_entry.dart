@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/utils/select_date.dart';
+import 'package:haash_moving_chart/cores/utils/show_snackbar.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
 import 'package:haash_moving_chart/features/chart/data/model/entry_model.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';
@@ -63,10 +65,12 @@ class ViewAnEntry extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Consumer<EntryProvider>(builder: (context, provider, child) {
               provider.items = entry.itemDetails!;
+
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: const [
+                    DataColumn(label: Text('Edit')),
                     DataColumn(label: Text('Model')),
                     DataColumn(label: Text('Bundle No')),
                     DataColumn(label: Text('Color')),
@@ -77,11 +81,18 @@ class ViewAnEntry extends StatelessWidget {
                     DataColumn(label: Text('Final Quantity')),
                     DataColumn(label: Text('Sale Bill No')),
                     DataColumn(label: Text('Remark')),
-                    DataColumn(label: Text('')),
-                    // DataColumn(label: Text('')),
+                    DataColumn(label: Text('Last updated by')),
+                    DataColumn(label: Text('Status')),
                   ],
                   rows: entry.itemDetails?.map((item) {
+                        provider.selectedStatus = item.status;
                         return DataRow(cells: [
+                          DataCell(InkWell(
+                              onTap: () {
+                                showAddItemDialog(context, provider,
+                                    id: entry.sId, detailsItem: item);
+                              },
+                              child: const Icon(Icons.edit))),
                           DataCell(Text(item.model ?? '')),
                           DataCell(Text(item.bundleNo ?? '')),
                           DataCell(Text(item.color ?? '')),
@@ -92,24 +103,49 @@ class ViewAnEntry extends StatelessWidget {
                           DataCell(Text(item.finalQuantity?.toString() ?? '')),
                           DataCell(Text(item.saleBillNo ?? '')),
                           DataCell(Text(item.remark ?? '')),
-                          DataCell(InkWell(
-                              onTap: () {
-                                showAddItemDialog(context, provider,
-                                    id: entry.sId, detailsItem: item);
+                          DataCell(Text(item.lastEditedBy ?? '')),
+                          DataCell(
+                            DropdownButton<String>(
+                              value: provider.selectedStatus,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'Pending',
+                                  child: Text(
+                                    'Pending',
+                                    style:
+                                        TextStyle(color: AppPallete.errorColor),
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Finished',
+                                  child: Text(
+                                    'Finished',
+                                    style: TextStyle(
+                                        color: AppPallete.enabledGreen),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (String? newValue) async {
+                                if (newValue != null) {
+                                  await provider.updateStatus(
+                                      entry.sId!, item.sId!, newValue);
+                                  if (provider.isSuccess == true) {
+                                    if (context.mounted) {
+                                      showSnackBar(context, provider.message);
+                                    }
+                                  } else {
+                                    if (context.mounted) {
+                                      showSnackBar(context,
+                                          '${provider.message}, Please refresh the app and try again.');
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  }
+                                }
                               },
-                              child: const Icon(Icons.edit_note_rounded))),
-                          // DataCell(InkWell(
-                          //     onTap: () async {
-                          //       await provider.deleteItemFromEntry(
-                          //           entry.sId!, item.sId!);
-                          //       if (provider.isSuccess && context.mounted) {
-                          //         showSnackBar(context, 'Item deleted');
-                          //       }
-                          //     },
-                          //     child: const Icon(
-                          //       Icons.delete_forever_rounded,
-                          //       color: AppPallete.errorColor,
-                          //     ))),
+                            ),
+                          ),
                         ]);
                       }).toList() ??
                       [],

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -96,20 +97,23 @@ class DetailsModel {
   double? finalQuantity;
   String? saleBillNo;
   String? remark;
+  String? status;
+  String? lastEditedBy;
 
-  DetailsModel({
-    this.sId,
-    this.model,
-    this.bundleNo,
-    this.color,
-    this.size,
-    this.quantity,
-    this.damageQuantity,
-    this.stitchingOrWashing,
-    this.finalQuantity,
-    this.saleBillNo,
-    this.remark,
-  });
+  DetailsModel(
+      {this.sId,
+      this.model,
+      this.bundleNo,
+      this.color,
+      this.size,
+      this.quantity,
+      this.damageQuantity,
+      this.stitchingOrWashing,
+      this.finalQuantity,
+      this.saleBillNo,
+      this.remark,
+      this.status,
+      this.lastEditedBy});
 
   DetailsModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'] ?? '';
@@ -123,6 +127,8 @@ class DetailsModel {
     finalQuantity = json['finalQuantity']?.toDouble() ?? 0;
     saleBillNo = json['saleBillNo'] ?? '';
     remark = json['remark'] ?? '';
+    status = json['status'] ?? '';
+    lastEditedBy = json['lastEditedBy'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -138,6 +144,39 @@ class DetailsModel {
     data['finalQuantity'] = finalQuantity;
     data['saleBillNo'] = saleBillNo;
     data['remark'] = remark;
+    data['status'] = status;
+    data['lastEditedBy'] = lastEditedBy;
     return data;
+  }
+
+  DetailsModel copyWith(
+      {String? sId,
+      String? model,
+      String? bundleNo,
+      String? color,
+      String? size,
+      double? quantity,
+      double? damageQuantity,
+      String? stitchingOrWashing,
+      double? finalQuantity,
+      String? saleBillNo,
+      String? remark,
+      String? status,
+      String? lastEditedBy}) {
+    return DetailsModel(
+      sId: sId ?? this.sId,
+      model: model ?? this.model,
+      bundleNo: bundleNo ?? this.bundleNo,
+      color: color ?? this.color,
+      size: size ?? this.size,
+      quantity: quantity ?? this.quantity,
+      damageQuantity: damageQuantity ?? this.damageQuantity,
+      stitchingOrWashing: stitchingOrWashing ?? this.stitchingOrWashing,
+      finalQuantity: finalQuantity ?? this.finalQuantity,
+      saleBillNo: saleBillNo ?? this.saleBillNo,
+      remark: remark ?? this.remark,
+      status: status ?? this.status,
+      lastEditedBy: lastEditedBy ?? this.lastEditedBy,
+    );
   }
 }

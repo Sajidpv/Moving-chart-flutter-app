@@ -72,7 +72,6 @@ class AddNewEntry extends StatelessWidget {
                     Consumer<EntryProvider>(builder: (context, prov, child) {
                       return Expanded(
                         child: DefaultTextFormField(
-                          isValidate: true,
                           textInputType: TextInputType.number,
                           textController: provider.idNoController,
                           label: 'ID No',
@@ -86,7 +85,6 @@ class AddNewEntry extends StatelessWidget {
                       return Expanded(
                         child: DefaultTextFormField(
                           readOnly: true,
-                          isValidate: true,
                           onTap: () => provider.selectDateFunction(context),
                           textController: provider.dateController,
                           label: 'Date',
@@ -99,7 +97,6 @@ class AddNewEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.challanController,
                   label: 'Challan No',
                 ),
@@ -111,7 +108,6 @@ class AddNewEntry extends StatelessWidget {
                   height: 5,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.supplierBillController,
                   label: 'Supplier bill No',
                 ),
@@ -119,7 +115,6 @@ class AddNewEntry extends StatelessWidget {
                   width: 20,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.latNoController,
                   label: 'LAT No',
                 ),
@@ -127,7 +122,6 @@ class AddNewEntry extends StatelessWidget {
                   width: 20,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textInputType: TextInputType.number,
                   textController: provider.quantityController,
                   label: 'Quantity',
@@ -146,7 +140,6 @@ class AddNewEntry extends StatelessWidget {
                       child: Column(
                         children: [
                           DefaultTextFormField(
-                            isValidate: true,
                             textController: provider.stichingController,
                             label: 'Stiching Name',
                           ),
@@ -154,7 +147,6 @@ class AddNewEntry extends StatelessWidget {
                             height: 10,
                           ),
                           DefaultTextFormField(
-                            isValidate: true,
                             textController: provider.washingController,
                             label: 'Washing Name',
                           ),
@@ -168,7 +160,6 @@ class AddNewEntry extends StatelessWidget {
                       child: Column(
                         children: [
                           DefaultTextFormField(
-                            isValidate: true,
                             textController: provider.stichBillController,
                             label: 'Bill No',
                           ),
@@ -176,7 +167,6 @@ class AddNewEntry extends StatelessWidget {
                             height: 10,
                           ),
                           DefaultTextFormField(
-                            isValidate: true,
                             textController: provider.washBillController,
                             label: 'Bill No',
                           ),

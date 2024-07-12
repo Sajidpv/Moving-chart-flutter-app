@@ -49,6 +49,7 @@ class AddItemToEntry extends StatelessWidget {
           detailsItem!.finalQuantity!.toString();
       provider.salesBillNoController.text = detailsItem!.saleBillNo!;
       provider.remarkController.text = detailsItem!.remark!;
+      provider.selectedStatus = detailsItem?.status;
       provider.isAssigned = true;
     }
     return Dialog(
@@ -87,7 +88,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.modelController,
                   label: 'Model',
                 ),
@@ -95,7 +95,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.bundleIdController,
                   label: 'BundleId',
                 ),
@@ -103,7 +102,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.colorController,
                   label: 'Color',
                 ),
@@ -111,7 +109,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.sizeController,
                   label: 'Size',
                 ),
@@ -119,7 +116,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textInputType: TextInputType.number,
                   textController: provider.itemQuantityController,
                   onChanged: (value) => provider.calculateTotalQuantity(),
@@ -129,7 +125,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textInputType: TextInputType.number,
                   textController: provider.damageQuantityController,
                   onChanged: (value) => provider.calculateTotalQuantity(),
@@ -139,7 +134,6 @@ class AddItemToEntry extends StatelessWidget {
                   height: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.stichingOrWashingController,
                   label: 'Stiching/Washing',
                 ),
@@ -148,7 +142,6 @@ class AddItemToEntry extends StatelessWidget {
                 ),
                 Consumer<EntryProvider>(builder: (context, provider, child) {
                   return DefaultTextFormField(
-                    isValidate: true,
                     textInputType: TextInputType.number,
                     textController: provider.finalQuantityController,
                     label: 'Final Quantity',
@@ -158,7 +151,6 @@ class AddItemToEntry extends StatelessWidget {
                   width: 10,
                 ),
                 DefaultTextFormField(
-                  isValidate: true,
                   textController: provider.salesBillNoController,
                   label: 'Sales Bill No',
                 ),

@@ -9,6 +9,7 @@ class AppPallete {
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Color.fromARGB(168, 158, 158, 158);
   static const Color errorColor = Colors.redAccent;
+  static const Color enabledGreen = Colors.green;
   static const Color transparentColor = Colors.transparent;
 
   static const Color lightBackgroundColor = Color.fromRGBO(222, 222, 246, 1);
