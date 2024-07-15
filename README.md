@@ -1,16 +1,6 @@
 # haash_moving_chart
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![2](https://github.com/user-attachments/assets/1280adc5-9bcf-4faa-b631-efce18804b06)
+![5](https://github.com/user-attachments/assets/99386dac-fb5c-48e7-b2ba-ca473bf122d8)
+![3](https://github.com/user-attachments/assets/b58946d3-8499-49a7-876d-630a0c3bc836)
+![Untitled-4 (1)](https://github.com/user-attachments/assets/d3930e0a-f7d0-48b1-a4f8-9ea2361f757e)
