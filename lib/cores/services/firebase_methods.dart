@@ -42,7 +42,7 @@ class FirebaseAuthMethods {
           await _firestore.collection('users').doc(user.uid).get();
       return userDoc.data();
     } catch (e) {
-      print('Error fetching user data: $e');
+      debugPrint('Error fetching user data: $e');
       return null;
     }
   }
@@ -64,7 +64,7 @@ class FirebaseAuthMethods {
       await _firestore.collection('entries').doc(model.sId).set(model.toJson());
       return true;
     } on FirebaseException catch (e) {
-      print('Error adding entry: $e');
+      debugPrint('Error adding entry: $e');
       return false;
     }
   }
@@ -90,7 +90,7 @@ class FirebaseAuthMethods {
           .doc(user.uid)
           .set({'isDarkMode': isDarkMode}, SetOptions(merge: true));
     } on FirebaseException catch (e) {
-      print('Error updating entry: $e');
+      debugPrint('Error updating entry: $e');
       rethrow;
     }
   }
@@ -109,7 +109,7 @@ class FirebaseAuthMethods {
 
       return entryDoc.docs.map((e) => e.data()).toList();
     } on FirebaseException catch (e, stacktrace) {
-      print('Error while loading $stacktrace : ${e.code}');
+      debugPrint('Error while loading $stacktrace : ${e.code}');
     }
     return [];
   }
@@ -118,10 +118,10 @@ class FirebaseAuthMethods {
   Future<bool> deleteEntry(String documentId) async {
     try {
       await _firestore.collection('entries').doc(documentId).delete();
-      print('$documentId successfully deleted.');
+      debugPrint('$documentId successfully deleted.');
       return true;
     } catch (error) {
-      print('Error deleting document: $error');
+      debugPrint('Error deleting document: $error');
       rethrow;
     }
   }
@@ -143,14 +143,14 @@ class FirebaseAuthMethods {
             .collection('entries')
             .doc(documentId)
             .update({'itemDetails': itemDetails});
-        print('Item $entryId successfully deleted from $documentId.');
+        debugPrint('Item $entryId successfully deleted from $documentId.');
         return true;
       } else {
-        print('Document $documentId does not exist.');
+        debugPrint('Document $documentId does not exist.');
         return false;
       }
     } catch (error) {
-      print('Error deleting item from document: $error');
+      debugPrint('Error deleting item from document: $error');
       rethrow;
     }
   }

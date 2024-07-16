@@ -21,6 +21,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<User?>();
+    if (user != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<EntryProvider>().getEntries();
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,

@@ -51,7 +51,6 @@ class EntryProvider with ChangeNotifier {
       FirebaseAuthMethods(FirebaseAuth.instance);
   void _initialization() {
     dateController.text = formatDate(selectedDate);
-    getEntries();
   }
 
   Future<void> selectDateFunction(BuildContext context) async {
