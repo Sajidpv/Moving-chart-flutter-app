@@ -4,6 +4,7 @@ import 'package:haash_moving_chart/cores/services/firebase_methods.dart';
 import 'package:haash_moving_chart/cores/theme/color_pellets.dart';
 import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
 import 'package:haash_moving_chart/cores/widgets/spacer.dart';
+import 'package:haash_moving_chart/features/chart/presentation/screens/privacy_screen_web_view.dart';
 import 'package:provider/provider.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -76,6 +77,24 @@ class HomeDrawer extends StatelessWidget {
                     title: const Text('Dark Mode '),
                     onTap: () {
                       Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    tileColor: Colors.transparent,
+                    leading: const Icon(Icons.privacy_tip_outlined),
+                    visualDensity:
+                        const VisualDensity(vertical: -3, horizontal: 1),
+                    title: const Text('Privacy Policy'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyScreen(
+                            url:
+                                'https://www.termsfeed.com/live/3d801076-b43e-4bc3-96e9-79fba00f29ee',
+                          ),
+                        ),
+                      );
                     },
                   ),
                   user == null

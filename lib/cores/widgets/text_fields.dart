@@ -129,7 +129,7 @@ class DefaultTextFormFieldState extends State<DefaultTextFormField> {
           suffix: widget.suffix == null ? null : Icon(widget.suffix),
           label: Text(
             widget.label ?? '',
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 14),
           ),
         ),
       ),

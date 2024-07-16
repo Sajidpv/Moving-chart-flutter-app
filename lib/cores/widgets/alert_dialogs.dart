@@ -40,6 +40,12 @@ Future<void> showCustomAlertDialog({
           ),
         ),
         actions: <Widget>[
+          TextButton(
+            child: Text(backAction),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           AnimatedBuilder(
             animation:
                 Tween<double>(begin: 0.0, end: opacity).animate(CurvedAnimation(
@@ -54,12 +60,6 @@ Future<void> showCustomAlertDialog({
                   child: Text(action),
                 ),
               );
-            },
-          ),
-          TextButton(
-            child: Text(backAction),
-            onPressed: () {
-              Navigator.of(context).pop();
             },
           ),
         ],
