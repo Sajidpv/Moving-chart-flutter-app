@@ -1,19 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:haash_moving_chart/cores/services/firebase_methods.dart';
 import 'package:haash_moving_chart/cores/theme/provider/theme_provider.dart';
 import 'package:haash_moving_chart/features/auth/presentation/pages/login_page.dart';
 import 'package:haash_moving_chart/features/chart/presentation/provider/entry_provider.dart';
 import 'package:haash_moving_chart/features/chart/presentation/screens/home.dart';
-import 'package:haash_moving_chart/firebase_options.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   runApp(MultiProvider(
     providers: [
